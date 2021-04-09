@@ -1,0 +1,69 @@
+version: "3.9"
+   
+services:
+  mysql:
+    restart: always
+    image: mysql
+    container_name: mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+      # - MYSQL_DATABASE=sjahn
+      # - MYSQL_USER=root
+      - MYSQL_PASSWORD=
+      - MYSQL_ROOT_PASSWORD=
+    ports:
+      - "3306:3306"
+    command: # 명령어 실행
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./volumes/data/mysql:/var/lib/mysql/
+
+  redis:
+    restart: always
+    image: 'redis'
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - './volumes/data/redis:/data'
+
+  es01:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+    container_name: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - cluster.initial_master_nodes=es01
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - './volumes/data/elasticsearch:/usr/share/elasticsearch/data'
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+  
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.12.0
+    container_name: kibana
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://es01:9200
+      ELASTICSEARCH_HOSTS: '["http://es01:9200"]'
+    networks:
+      - elastic
+    depends_on:
+      - es01
+  
+networks:
+  elastic:
+    driver: bridge
