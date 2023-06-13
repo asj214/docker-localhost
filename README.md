@@ -1,14 +1,11 @@
-# docker database
-
-다른 프레임워크들이랑 같이 쓸라고 만든 도커
-여러가지 설치 안하고 이거로 띄워서 다른 프로젝트들이랑 퉁칠 예정 ㅎㅎ
-근데 sqllite 너무 매력적이라서 mysql은 후후훔
+# docker-localhost
+로컬에서 이것 저것 설치할려니 너무 번거로워서 로컬 개발 공부용을 위한 도커
+필요할때마다 다른 프로그램(Ex. Postgresql 등)들을 추가할 수 있다. 
 
 ### 들어가있는 자원
 - mysql
 - redis
-- elastic search
-- kibana
+- mongodb
 
 
 ### commands
@@ -26,6 +23,8 @@ docker ps
 
 # docker 내부 접속
 docker exec -it [CONTAINER_ID] /bin/sh
+# 위에꺼 안되면 
+docker exec -it [CONTAINER_ID] /bin/bash
 
 # 
 docker-compose up --build
