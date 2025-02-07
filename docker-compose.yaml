@@ -1,38 +1,17 @@
 version: "3"
    
 services:
-  mysql:
-    platform: linux/x86_64 
+  mariadb:
     restart: always
-    image: mysql:5.7
-    container_name: mysql
+    image: mariadb:10.1
+    container_name: mariadb
     environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=1
-      # - MYSQL_DATABASE=sjahn
-      # - MYSQL_USER=root
-      - MYSQL_PASSWORD=
-      - MYSQL_ROOT_PASSWORD=
+      - TZ="Asia/Seoul"
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "3306:3306"
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
     volumes:
-      - ./volumes/data/mysql:/var/lib/mysql/
-    networks:
-      - net
-
-  mongodb:
-    image: mongo
-    container_name: mongodb
-    restart: always
-    ports:
-      - 27017:27017
-    volumes:
-      - ./volumes/data/mongodb:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=rewq1234
+      - ./volumes/data/mariadb:/var/lib/mysql/
     networks:
       - net
 
